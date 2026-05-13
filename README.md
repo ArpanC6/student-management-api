@@ -1,7 +1,3 @@
-## Architecture
-
-![Architecture Diagram](architecture.png)
-
 # Student Management REST API
 
 A clean, production-style RESTful API built with **Spring Boot** for managing student records. Features a layered architecture, custom exception handling, and structured JSON error responses.
@@ -57,30 +53,7 @@ src/
 
 ## Architecture
 
-```
-HTTP Request
-     │
-     ▼
-┌──────────────────────┐
-│  StudentController   │  ← Receives request, returns response
-└────────┬─────────────┘
-         │
-         ▼
-┌──────────────────────┐
-│   StudentService     │  ← Business logic, data processing
-└────────┬─────────────┘
-         │
-         ▼
-┌──────────────────────┐
-│    Student Model     │  ← Data: id, name, age, email
-└──────────────────────┘
-         │
-         │ (on error)
-         ▼
-┌──────────────────────────┐
-│  GlobalExceptionHandler  │  ← Catches exceptions, returns clean JSON
-└──────────────────────────┘
-```
+![Architecture Diagram](student-manage-api/assets/architecture.png)
 
 ---
 
@@ -108,7 +81,7 @@ git clone https://github.com/ArpanC6/student-management-api.git
 
 **2. Navigate to the project folder**
 ```bash
-cd student-management-api/student-manage-api
+cd student-manage-api
 ```
 
 **3. Run the application**
@@ -179,3 +152,7 @@ http://localhost:8080
 ```
 
 ---
+
+## License
+
+This project is open source and available under the [MIT License](LICENSE).
