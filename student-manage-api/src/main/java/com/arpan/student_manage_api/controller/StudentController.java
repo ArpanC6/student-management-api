@@ -4,10 +4,8 @@ package com.arpan.student_manage_api.controller;
 import com.arpan.student_manage_api.model.Student;
 import com.arpan.student_manage_api.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,5 +24,21 @@ public class StudentController {
     @GetMapping("/{id}")
     public Student getStudentByid(@PathVariable int id) {
         return studentService.getStudentById(id);
+    }
+
+    @PostMapping
+    public ResponseEntity<Student> addStudent(@RequestBody Student student) {
+        return ResponseEntity.status(201).body(studentService.addStudent(student));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Student> deleteStudent(@PathVariable int id, @RequestBody Student student) {
+        return ResponseEntity.ok(studentService.updateStudent(id, student));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleStudent(@PathVariable int id) {
+        studentService.deleteStudent(id);
+        return ResponseEntity.ok("Student deleted successfully");
     }
 }

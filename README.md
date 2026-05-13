@@ -1,14 +1,25 @@
+## Architecture
+
+![Architecture Diagram](architecture.png)
+
 # Student Management REST API
 
-A RESTful API built with Spring Boot for managing student data,
-featuring proper MVC architecture and global exception handling.
+A clean, production-style RESTful API built with **Spring Boot** for managing student records. Features a layered architecture, custom exception handling, and structured JSON error responses.
+
+---
 
 ## Tech Stack
 
-- Java 24
-- Spring Boot 4.0.6
-- Spring Web (REST API)
-- Maven
+| Technology  | Details           |
+|-------------|-------------------|
+| Language    | Java 24           |
+| Framework   | Spring Boot 4.0.6 |
+| Module      | Spring Web        |
+| Build Tool  | Maven             |
+
+---
+
+## Project Structure
 
 ```
 src/
@@ -18,29 +29,64 @@ src/
             └── arpan/
                 └── student_manage_api/
                     ├── controller/
-                    │   └── StudentController.java       # Handles HTTP requests
+                    │   └── StudentController.java        # Handles incoming HTTP requests & sends responses
                     ├── model/
-                    │   └── Student.java                 # Data model (id, name, age, email)
+                    │   └── Student.java                  # Data model: id, name, age, email
                     ├── service/
-                    │   └── StudentService.java          # Business logic
+                    │   └── StudentService.java           # Core business logic & data processing
                     ├── exception/
-                    │   ├── GlobalExceptionHandler.java  # Catches all exceptions globally
-                    │   ├── StudentNotFoundException.java # Custom exception
-                    │   └── ErrorResponse.java           # Clean JSON error response
-                    └── StudentManageApiApplication.java  # Entry point
+                    │   ├── GlobalExceptionHandler.java   # Catches all exceptions globally via @ControllerAdvice
+                    │   ├── StudentNotFoundException.java  # Custom exception for missing students
+                    │   └── ErrorResponse.java            # Structured JSON error response model
+                    └── StudentManageApiApplication.java  # Application entry point
 ```
+
+---
 
 ## API Endpoints
 
-| Method | Endpoint | Description | Response |
-|--------|----------|-------------|----------|
-| GET | /api/students | Get all students | 200 OK |
-| GET | /api/students/{id} | Get student by ID | 200 OK / 404 Not Found |
+| Method   | Endpoint              | Description             | Response                   |
+|----------|-----------------------|-------------------------|----------------------------|
+| `GET`    | `/api/students`       | Fetch all students      | `200 OK`                   |
+| `GET`    | `/api/students/{id}`  | Fetch student by ID     | `200 OK` / `404 Not Found` |
+| `POST`   | `/api/students`       | Create a new student    | `201 Created`              |
+| `PUT`    | `/api/students/{id}`  | Update existing student | `200 OK`                   |
+| `DELETE` | `/api/students/{id}`  | Delete a student        | `200 OK`                   |
+
+---
+
+## Architecture
+
+```
+HTTP Request
+     │
+     ▼
+┌──────────────────────┐
+│  StudentController   │  ← Receives request, returns response
+└────────┬─────────────┘
+         │
+         ▼
+┌──────────────────────┐
+│   StudentService     │  ← Business logic, data processing
+└────────┬─────────────┘
+         │
+         ▼
+┌──────────────────────┐
+│    Student Model     │  ← Data: id, name, age, email
+└──────────────────────┘
+         │
+         │ (on error)
+         ▼
+┌──────────────────────────┐
+│  GlobalExceptionHandler  │  ← Catches exceptions, returns clean JSON
+└──────────────────────────┘
+```
+
+---
 
 ## Error Handling
 
-Instead of returning a generic error page, invalid requests return
-a clean JSON error response.
+Instead of a generic error page, all failures return a clean, structured JSON response:
 
 ```json
 {
@@ -49,59 +95,87 @@ a clean JSON error response.
 }
 ```
 
-## Architecture
+This is handled globally by `GlobalExceptionHandler` using `@ControllerAdvice`, so no controller-level try/catch is needed.
 
-```
-HTTP Request
-     |
-     v
-StudentController      (Receives request, sends response)
-     |
-     v
-StudentService         (Business logic, data processing)
-     |
-     v
-Student Model          (Data: id, name, age, email)
-     |
-     v (if error)
-GlobalExceptionHandler (Catches exception, returns clean JSON)
-```
+---
 
-## How to Run
+## Getting Started
 
-1. Clone the repository
-
+**1. Clone the repository**
+```bash
 git clone https://github.com/ArpanC6/student-management-api.git
+```
 
-2. Navigate to project folder
-
+**2. Navigate to the project folder**
+```bash
 cd student-management-api/student-manage-api
+```
 
-3. Run the application
-
+**3. Run the application**
+```bash
 ./mvnw spring-boot:run
+```
 
-4. API will start at http://localhost:8080
+**4. API is available at:**
+```
+http://localhost:8080
+```
 
-## Sample Response
+---
 
-GET /api/students
+## Sample Requests & Responses
+
+### GET /api/students — Fetch all students
 
 ```json
 [
-  { "id": 1, "name": "Arpan", "age": 21, "email": "arpan@gmail.com" },
-  { "id": 2, "name": "Rahul", "age": 22, "email": "rahul@gmail.com" },
-  { "id": 3, "name": "Ram",   "age": 23, "email": "ram@gmail.com"   }
+  {
+    "id": 1,
+    "name": "Arpan Kumar",
+    "age": 22,
+    "email": "arpan.updated@gmail.com"
+  },
+  {
+    "id": 2,
+    "name": "Rahul",
+    "age": 22,
+    "email": "rahul@gmail.com"
+  }
 ]
 ```
 
-GET /api/students/1
+### GET /api/students/1 — Fetch student by ID
 
 ```json
 {
   "id": 1,
-  "name": "Arpan",
-  "age": 21,
-  "email": "arpan@gmail.com"
+  "name": "Arpan Kumar",
+  "age": 22,
+  "email": "arpan.updated@gmail.com"
 }
 ```
+
+### POST /api/students — Create a new student
+
+**Request Body:**
+```json
+{
+  "id": 5,
+  "name": "Subhas",
+  "age": 24,
+  "email": "subhas@gmail.com"
+}
+```
+
+**Response:** `201 Created`
+
+### GET /api/students/99 — Student not found
+
+```json
+{
+  "status": 404,
+  "message": "Student not found with id: 99"
+}
+```
+
+---

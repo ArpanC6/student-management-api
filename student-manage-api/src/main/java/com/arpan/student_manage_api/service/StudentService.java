@@ -1,6 +1,5 @@
 package com.arpan.student_manage_api.service;
 
-
 import com.arpan.student_manage_api.exception.StudentNotFoundException;
 import com.arpan.student_manage_api.model.Student;
 import org.springframework.stereotype.Service;
@@ -30,4 +29,28 @@ public class StudentService {
                 .orElseThrow(() -> new StudentNotFoundException(id));
     }
 
+    public Student addStudent(Student student) {
+        students.add(student);
+        return student;
+    }
+
+    public Student updateStudent(int id, Student updatedStudent) {
+        Student existing = students.stream()
+                .filter(s -> s.getId() == id)
+                .findFirst()
+                .orElseThrow(() -> new StudentNotFoundException(id));
+
+        students.remove(existing);
+        students.add(new Student(id, updatedStudent.getName(), updatedStudent.getAge(), updatedStudent.getEmail()));
+        return updatedStudent;
+    }
+
+    public void deleteStudent(int id) {
+        Student existing = students.stream()
+                .filter(s -> s.getId() == id)
+                .findFirst()
+                .orElseThrow(() -> new StudentNotFoundException(id));
+
+        students.remove(existing);
+    }
 }
