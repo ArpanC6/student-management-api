@@ -51,10 +51,6 @@ src/
 
 ---
 
-## Architecture
-
-![Architecture Diagram](student-manage-api/assets/architecture.png)
-
 ---
 
 ## Error Handling
@@ -152,7 +148,3 @@ http://localhost:8080
 ```
 
 ---
-
-## License
-
-This project is open source and available under the [MIT License](LICENSE).
